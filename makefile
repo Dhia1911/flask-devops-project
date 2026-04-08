@@ -5,7 +5,7 @@ install:
 	pip install -r requirements.txt
 
 run:
-	python $(APP)
+	python3 app/main.py
 
 test:
 	pytest
