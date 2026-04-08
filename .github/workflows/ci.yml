@@ -1,50 +1,48 @@
 name: CI Pipeline
 
 on:
-push:
-branches: [main, develop]
-pull_request:
-branches: [main, develop]
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  # Permet de lancer le workflow manuellement via le bouton "Run workflow"
+  workflow_dispatch:
 
 jobs:
-lint-and-test:
-runs-on: ubuntu-latest
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-```
-steps:
-  - name: Checkout code
-    uses: actions/checkout@v4
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-  - name: Setup Python 3.12
-    uses: actions/setup-python@v5
-    with:
-      python-version: "3.12"
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
 
-  - name: Cache pip dependencies
-    uses: actions/cache@v4
-    with:
-      path: ~/.cache/pip
-      key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-  - name: Install dependencies
-    run: pip install -r requirements.txt
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          flake8 app/ --max-line-length=100 --exclude=__pycache__
 
-  - name: Lint with flake8
-    run: |
-      pip install flake8
-      flake8 app/ --max-line-length=100 --exclude=__pycache__
+      - name: Test with pytest
+        run: |
+          pip install pytest pytest-cov
+          pytest tests/ -v --cov=app --cov-report=xml --cov-report=html
 
-  - name: Test with pytest
-    run: |
-      pip install pytest pytest-cov
-      pytest tests/ -v --cov=app --cov-report=xml --cov-report=html
-
-  - name: Upload coverage report
-    uses: actions/upload-artifact@v4
-    if: always()
-    with:
-      name: coverage-report
-      path: htmlcov/
-      retention-days: 7
-```
-
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: htmlcov/
+          retention-days: 7
