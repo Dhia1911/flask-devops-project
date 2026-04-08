@@ -2,9 +2,14 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches:
+      - main
+      - develop
+      - feature/**
   pull_request:
-    branches: [main, develop]
+    branches:
+      - main
+      - develop
 
 jobs:
   lint-and-test:
@@ -47,4 +52,3 @@ jobs:
           name: coverage-report
           path: htmlcov/
           retention-days: 7
-          
