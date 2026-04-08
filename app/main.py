@@ -7,8 +7,6 @@ app = Flask(__name__)
 # Stockage temporaire (mémoire)
 todos = []
 
-#Dhia19
-
 # GET /todos
 @app.route("/todos", methods=["GET"])
 def get_todos():
