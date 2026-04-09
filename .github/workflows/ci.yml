@@ -68,3 +68,34 @@ jobs:
           dockerfile: Dockerfile
           failure-threshold: warning
           config: .hadolint.yaml
+
+  security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Bandit
+        run: pip install bandit
+
+      - name: Run Bandit SAST scan
+        run: |
+          # Générer rapport JSON (même si erreurs)
+          bandit -r app/ -ll -f json -o bandit-report.json || true
+          
+          # FAIL si HIGH
+          bandit -r app/ -ll
+
+      - name: Upload Bandit report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bandit-security-report
+          path: bandit-report.json
+          retention-days: 7
