@@ -40,7 +40,6 @@ def delete_todo(index):
 def health():
     return {"status": "ok"}, 200
 
-password = "secret123"
 
 if __name__ == "__main__":
     host = os.getenv("FLASK_RUN_HOST", "127.0.0.1")
