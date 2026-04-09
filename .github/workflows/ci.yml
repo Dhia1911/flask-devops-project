@@ -55,3 +55,16 @@ jobs:
           name: coverage-report
           path: htmlcov/
           retention-days: 7
+
+  lint-dockerfile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Lint Dockerfile with Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          failure-threshold: warning
+          config: .hadolint.yaml
