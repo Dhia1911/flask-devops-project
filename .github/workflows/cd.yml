@@ -1,0 +1,34 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Login GHCR
+      - name: Login to GHCR
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      # 3. Build image
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ Dhia1911/flask-devops-project }}:latest .
+          docker build -t ghcr.io/${{ Dhia1911/flask-devops-project }}:sha-${{ github.sha }} .
+
+      # 4. Push image
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${{ Dhia1911/flask-devops-project }}:latest
+          docker push ghcr.io/${{ Dhia1911/flask-devops-project }}:sha-${{ github.sha }}
