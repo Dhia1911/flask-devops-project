@@ -40,3 +40,13 @@ jobs:
           format: table
           exit-code: "0"
           severity: HIGH,CRITICAL
+      
+      - name: Notify Slack
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "Deploy ${{ job.status }} 🚀\nRepo: ${{ github.repository }}\nTag: sha-${{ github.sha }}\nRun: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
