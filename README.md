@@ -8,3 +8,6 @@
 
 > API Flask Todo avec pipeline DevOps complet : CI/CD GitHub Actions, Docker,
 > sécurité (Bandit, Hadolint), tests automatisés et monitoring.
+## Secrets requis
+
+- SLACK_WEBHOOK : webhook Slack pour notifications CD
